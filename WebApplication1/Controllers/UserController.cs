@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.Models;
+using WebApplication1.Services;
 
 namespace WebApplication1.Controllers;
 
@@ -9,19 +10,17 @@ namespace WebApplication1.Controllers;
 [Route("/api/user/")]
 public class UserController : ControllerBase
 {
-    private readonly PaymentContext _context;
+    private readonly UserServices _userServices;
 
-    public UserController(PaymentContext context)
+    public UserController(UserServices userServices)
     {
-        _context = context;
+        _userServices = userServices;
     }
     
     [HttpPost("register")]
     public ActionResult RegisterUser([FromBody] UserModel newUser)
     {
-        _context.User.Add(newUser);
-        _context.SaveChanges();
-
+        _userServices.TryRegisterUser(newUser);
         return Ok(newUser);
     }
 }
